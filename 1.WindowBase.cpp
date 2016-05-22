@@ -2,7 +2,7 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
-LPCTSTR lpszClass= TEXT("First"); //Å¬·¡½º
+LPCTSTR lpszClass= TEXT("First"); //í´ëž˜ìŠ¤
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -11,25 +11,25 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WNDCLASS WndClass;
 	g_hInst = hInstance;
 	
-	WndClass.cbClsExtra = 0;										//¿¹¾à¿µ¿ª1, Æ¯¼öÇÑ °æ¿ì »ç¿ëµÇ¸ç ±×¿Ü´Â 0À¸·Î
-	WndClass.cbWndExtra = 0;										//¿¹¾à¿µ¿ª2, ÀÌÇÏ µ¿ÀÏ
-	WndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);   //À©µµ¿ìÀÇ ¹è°æ »ö»óÀ» ÁöÁ¤.
-	WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);					//¸¶¿ì½º Ä¿¼­ ÁöÁ¤.
-	WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);				//¾ÆÀÌÄÜ ÁöÁ¤.
-	WndClass.hInstance = hInstance;									//À©µµ¿ì Å¬·¡½º¸¦ µî·ÏÇÏ´Â ÇÁ·Î±×·¥ÀÇ ¹øÈ£·Î WinMainÀÇ hInstance¸¦ ÁÖ¸é µÈ´Ù.
-	WndClass.lpfnWndProc = WndProc;									//¸Þ¼¼Áö¸¦ Ã³¸®ÇÒ ÇÔ¼ö.(Áß¿ä!)
-	WndClass.lpszClassName = lpszClass;								//ÇÁ·Î±×·¥ Å¬·¡½ºÀÇ ÀÌ¸§ µî·Ï.
-	WndClass.lpszMenuName = NULL;									//ÇÁ·Î±×·¥ÀÌ »ç¿ëÇÒ ¸Þ´º¸¦ ÁöÁ¤ÇÑ´Ù.
-	WndClass.style = CS_HREDRAW | CS_VREDRAW;						//À©µµ¿ì ½ºÅ¸ÀÏ(À©µµ¿ì°¡ ¾î¶² ÇüÅÂ¸¦ °®À» ÁöÀÇ °ªµé)
-	RegisterClass(&WndClass);										//WndClass Æ¯¼ºÀ» ÀúÀå.
+	WndClass.cbClsExtra = 0;					//ì˜ˆì•½ì˜ì—­1, íŠ¹ìˆ˜í•œ ê²½ìš° ì‚¬ìš©ë˜ë©° ê·¸ì™¸ëŠ” 0ìœ¼ë¡œ
+	WndClass.cbWndExtra = 0;					//ì˜ˆì•½ì˜ì—­2, ì´í•˜ ë™ì¼
+	WndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);   //ìœˆë„ìš°ì˜ ë°°ê²½ ìƒ‰ìƒì„ ì§€ì •.
+	WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);			//ë§ˆìš°ìŠ¤ ì»¤ì„œ ì§€ì •.
+	WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);		//ì•„ì´ì½˜ ì§€ì •.
+	WndClass.hInstance = hInstance;					//ìœˆë„ìš° í´ëž˜ìŠ¤ë¥¼ ë“±ë¡í•˜ëŠ” í”„ë¡œê·¸ëž¨ì˜ ë²ˆí˜¸ë¡œ WinMainì˜ hInstanceë¥¼ ì£¼ë©´ ëœë‹¤.
+	WndClass.lpfnWndProc = WndProc;					//ë©”ì„¸ì§€ë¥¼ ì²˜ë¦¬í•  í•¨ìˆ˜.(ì¤‘ìš”!)
+	WndClass.lpszClassName = lpszClass;				//í”„ë¡œê·¸ëž¨ í´ëž˜ìŠ¤ì˜ ì´ë¦„ ë“±ë¡.
+	WndClass.lpszMenuName = NULL;					//í”„ë¡œê·¸ëž¨ì´ ì‚¬ìš©í•  ë©”ë‰´ë¥¼ ì§€ì •í•œë‹¤.
+	WndClass.style = CS_HREDRAW | CS_VREDRAW;			//ìœˆë„ìš° ìŠ¤íƒ€ì¼(ìœˆë„ìš°ê°€ ì–´ë–¤ í˜•íƒœë¥¼ ê°–ì„ ì§€ì˜ ê°’ë“¤)
+	RegisterClass(&WndClass);					//WndClass íŠ¹ì„±ì„ ì €ìž¥.
 
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd,nCmdShow);
 
 	while (GetMessage(&Message, NULL, 0, 0))
 	{
-		TranslateMessage(&Message);
-		DispatchMessage(&Message);
+		TranslateMessage(&Message); //key input, Message
+		DispatchMessage(&Message);  //send message -> WndProc
 	}
 	return (int)Message.wParam;
 }
