@@ -46,8 +46,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		SetTimer(hWnd, 1, 1000, NULL);
 		GetClientRect(hWnd, &rect);
-		GetLocalTime(&st);
-		wsprintf(str, L"지금 시간은 %d:%d:%d입니다.", st.wHour, st.wMinute, st.wSecond);
+		SendMessage(hWnd, WM_TIMER, 1, 0);
 		return 0;
 	case WM_TIMER:
 		GetLocalTime(&st);
