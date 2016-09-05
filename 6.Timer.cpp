@@ -41,31 +41,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	SYSTEMTIME st;
 	static TCHAR str[128];
 	static RECT rect;
+	static RECT invalRect;
 
 	switch (iMessage) {
 	case WM_CREATE:
 		SetTimer(hWnd, 1, 1000, NULL);
 		GetClientRect(hWnd, &rect);
+
+		invalRect.bottom = rect.bottom + 5;
+		invalRect.left = rect.left - 10;
+		invalRect.right = rect.right + 10;
+		invalRect.top = rect.top - 5;
+
 		SendMessage(hWnd, WM_TIMER, 1, 0);
 		return 0;
 	case WM_TIMER:
 		GetLocalTime(&st);
-		wsprintf(str, L"지금 시간은 %d:%d:%d입니다.",st.wHour,st.wMinute,st.wSecond);
-		InvalidateRect(hWnd, 0, TRUE);
+		wsprintf(str, TEXT("지금 시간은 %d:%d:%d입니다."), st.wHour, st.wMinute, st.wSecond);
+		InvalidateRect(hWnd, &invalRect, TRUE);
 		return 0;
 	case WM_SIZE:
 		GetClientRect(hWnd, &rect);
+		invalRect.bottom = rect.bottom + 5;
+		invalRect.left = rect.left - 10;
+		invalRect.right = rect.right + 10;
+		invalRect.top = rect.top - 5;
 		return 0;
 	case WM_CHAR:
 		return 0;
 	case WM_DESTROY:
-		KillTimer(hWnd,1);
+		KillTimer(hWnd, 1);
 		PostQuitMessage(0);
 		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		SetTextAlign(hdc, TA_CENTER);
-		TextOut(hdc, rect.right / 2.0f, rect.bottom/2, str, lstrlen(str));
+		TextOut(hdc, rect.right / 2.0f, rect.bottom / 2, str, lstrlen(str));
 		EndPaint(hWnd, &ps);
 		return 0;
 	}
