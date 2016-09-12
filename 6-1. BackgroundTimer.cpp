@@ -2,7 +2,7 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
-LPCTSTR lpszClass = TEXT("Timer - Second"); //클래스
+LPCTSTR lpszClass = TEXT("Background"); //클래스
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -37,59 +37,51 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
-	PAINTSTRUCT ps;
-	SYSTEMTIME st;
-	static TCHAR str[128];
-	static RECT rect;
-	static RECT invalRect;
-
+	int i;
+	static DWORD_PTR mouseX;
+	static DWORD_PTR mouseY;
 	switch (iMessage) {
 	case WM_CREATE:
-		SetTimer(hWnd, 1, 1000, NULL);
-		SetTimer(hWnd, 2, 5000, NULL);
-		GetClientRect(hWnd, &rect);
-
-		invalRect.bottom = rect.bottom + 5;
-		invalRect.left = rect.left - 10;
-		invalRect.right = rect.right + 10;
-		invalRect.top = rect.top - 5;
-
-		SendMessage(hWnd, WM_TIMER, 1, 0);
+		SetTimer(hWnd, 1, 50, NULL);
+		SetTimer(hWnd, 2, 100, NULL);
 		return 0;
 	case WM_TIMER:
-		switch (wParam)
-		{
+		hdc = GetDC(hWnd);
+		switch (wParam) {
 		case 1:
-			GetLocalTime(&st);
-			wsprintf(str, TEXT("지금 시간은 %d:%d:%d입니다."), st.wHour, st.wMinute, st.wSecond);
-			InvalidateRect(hWnd, &invalRect, TRUE);
+			for (i = 0; i < 1000; i++)
+				SetPixel(hdc, rand() % 1200, rand() % 800, RGB(rand() % 256, rand() % 256, rand() % 256));
 			break;
 		case 2:
-			MessageBeep(MB_OK);
-			MessageBox(hWnd, TEXT("TEST"), TEXT("TTT"), MB_OK);
+			Ellipse(hdc, mouseX - 10, mouseY - 10, mouseX + 10, mouseY + 10);
 			break;
 		}
+		ReleaseDC(hWnd, hdc);
 		return 0;
 	case WM_SIZE:
-		GetClientRect(hWnd, &rect);
-		invalRect.bottom = rect.bottom + 5;
-		invalRect.left = rect.left - 10;
-		invalRect.right = rect.right + 10;
-		invalRect.top = rect.top - 5;
 		return 0;
 	case WM_CHAR:
+		switch (wParam)
+		{
+		case VK_ESCAPE:
+			SendMessage(hWnd, WM_DESTROY, 0, 0);
+		}
 		return 0;
 	case WM_DESTROY:
 		KillTimer(hWnd, 1);
 		KillTimer(hWnd, 2);
 		PostQuitMessage(0);
 		return 0;
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		SetTextAlign(hdc, TA_CENTER);
-		TextOut(hdc, rect.right / 2.0f, rect.bottom / 2, str, lstrlen(str));
-		EndPaint(hWnd, &ps);
+	case WM_LBUTTONDOWN:
+		hdc = GetDC(hWnd);
+		Ellipse(hdc, LOWORD(lParam) - 10, HIWORD(lParam) - 10, LOWORD(lParam) + 10, HIWORD(lParam) + 10);
+		ReleaseDC(hWnd, hdc);
 		return 0;
+	case WM_MOUSEMOVE:
+		mouseX = LOWORD(lParam);
+		mouseY = HIWORD(lParam);
+		break;
+
 	}
 	return (DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
