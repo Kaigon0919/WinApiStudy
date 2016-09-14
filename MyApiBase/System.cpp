@@ -87,27 +87,10 @@ bool SystemClass::Frame()
 
 LRESULT SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	HDC hdc;
-	int i;
-	static DWORD_PTR mouseX;
-	static DWORD_PTR mouseY;
 	switch (iMessage) {
 	case WM_CREATE:
-		SetTimer(hWnd, 1, 50, NULL);
-		SetTimer(hWnd, 2, 100, NULL);
 		return 0;
 	case WM_TIMER:
-		hdc = GetDC(hWnd);
-		switch (wParam) {
-		case 1:
-			for (i = 0; i < 1000; i++)
-				SetPixel(hdc, rand() % 1200, rand() % 800, RGB(rand() % 256, rand() % 256, rand() % 256));
-			break;
-		case 2:
-			Ellipse(hdc, mouseX - 10, mouseY - 10, mouseX + 10, mouseY + 10);
-			break;
-		}
-		ReleaseDC(hWnd, hdc);
 		return 0;
 	case WM_SIZE:
 		return 0;
@@ -118,20 +101,11 @@ LRESULT SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 			SendMessage(hWnd, WM_DESTROY, 0, 0);
 		}
 		return 0;
+	case WM_LBUTTONDOWN:
+		return 0;
 	case WM_DESTROY:
-		KillTimer(hWnd, 1);
-		KillTimer(hWnd, 2);
 		PostQuitMessage(0);
 		return 0;
-	case WM_LBUTTONDOWN:
-		hdc = GetDC(hWnd);
-		Ellipse(hdc, LOWORD(lParam) - 10, HIWORD(lParam) - 10, LOWORD(lParam) + 10, HIWORD(lParam) + 10);
-		ReleaseDC(hWnd, hdc);
-		return 0;
-	case WM_MOUSEMOVE:
-		mouseX = LOWORD(lParam);
-		mouseY = HIWORD(lParam);
-		break;
 	}
 	return (DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
