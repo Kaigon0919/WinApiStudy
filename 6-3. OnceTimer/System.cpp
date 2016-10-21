@@ -1,6 +1,6 @@
 #include "System.h"
 
-SystemClass::SystemClass()
+SystemClass::SystemClass() : count(0), isStart(false)
 {
 }
 
@@ -50,6 +50,9 @@ void SystemClass::Shutdown()
 
 bool SystemClass::InitializeWindows()
 {
+	// WndProc에서 해당 객체로 접근 가능하게 static 포인터에 해당 객체를 넘김.
+	ApplicationHandle = this;
+
 	WNDCLASS WndClass;
 
 	// 프로그램 이름 설정.
@@ -71,7 +74,7 @@ bool SystemClass::InitializeWindows()
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;			//윈도우 스타일(윈도우가 어떤 형태를 갖을 지의 값들)
 	RegisterClass(&WndClass);					//WndClass 특성을 저장.
 
-	// 윈도우 생성.
+												// 윈도우 생성.
 	m_hwnd = CreateWindow(m_applicationName, m_applicationName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, m_hInstance, NULL);
 
 	// 윈도우 표시.
@@ -85,13 +88,10 @@ bool SystemClass::Frame()
 	return false;
 }
 
-LRESULT SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
+LRESULT SystemClass::MessageHandler(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	static TCHAR str[128];
-	static int count = 0;
-	static bool isStart = false;
 	switch (iMessage) {
 	case WM_CREATE:
 		lstrcpy(str, TEXT("왼쪽 버튼을 눌러주세요."));
@@ -103,7 +103,7 @@ LRESULT SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 			KillTimer(hWnd, count++);
 			lstrcpy(str, TEXT("안녕 친구야"));
 			InvalidateRect(hWnd, NULL, TRUE);
-			SetTimer(hWnd,count, 3000, NULL);
+			SetTimer(hWnd, count, 3000, NULL);
 			break;
 		case 1:
 			KillTimer(hWnd, count++);
@@ -136,8 +136,8 @@ LRESULT SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 			count = 0;
 			isStart = false;
 			break;
-
 		}
+		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		TextOut(hdc, 100, 100, str, lstrlen(str));
@@ -150,19 +150,29 @@ LRESULT SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPa
 		{
 		case VK_ESCAPE:
 			SendMessage(hWnd, WM_DESTROY, 0, 0);
+			break;
 		}
 		return 0;
 	case WM_LBUTTONDOWN:
 		if (isStart)
-			return 0;
+			break;
 		lstrcpy(str, TEXT("왼쪽 버튼을 눌렀습니다."));
 		InvalidateRect(hWnd, NULL, TRUE);
 		SetTimer(hWnd, count, 3000, NULL);
 		isStart = true;
 		return 0;
+	}
+	return DefWindowProc(hWnd, iMessage, wParam, lParam);
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
+{
+	switch (iMessage)
+	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+	default:
+		return ApplicationHandle->MessageHandler(hWnd, iMessage, wParam, lParam);
 	}
-	return (DefWindowProc(hWnd, iMessage, wParam, lParam));
 }
