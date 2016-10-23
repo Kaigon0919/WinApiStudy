@@ -13,8 +13,6 @@ private:
 	TCHAR str[128];
 	int count;
 	bool isStart;
-
-
 public:
 	SystemClass();
 	SystemClass(const SystemClass &ref);
@@ -24,13 +22,12 @@ public:
 	void Run();
 	void Shutdown();
 	LRESULT CALLBACK MessageHandler(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 private:
 	bool InitializeWindows();
 	bool Frame();
 	
 };
-
-static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 static SystemClass * ApplicationHandle = 0;
 #endif

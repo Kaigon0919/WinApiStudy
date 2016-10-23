@@ -1,6 +1,6 @@
 #include "System.h"
 
-SystemClass::SystemClass() 
+SystemClass::SystemClass()
 {
 }
 
@@ -21,11 +21,9 @@ bool SystemClass::Initialize()
 
 void SystemClass::Run()
 {
-
 	MSG Message;
 	bool done = false;
 	ZeroMemory(&Message, sizeof(Message));
-
 
 	while (!done)
 	{
@@ -74,7 +72,7 @@ bool SystemClass::InitializeWindows()
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;			//윈도우 스타일(윈도우가 어떤 형태를 갖을 지의 값들)
 	RegisterClass(&WndClass);					//WndClass 특성을 저장.
 
-												// 윈도우 생성.
+	// 윈도우 생성.
 	m_hwnd = CreateWindow(m_applicationName, m_applicationName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, m_hInstance, NULL);
 
 	// 윈도우 표시.
@@ -112,7 +110,7 @@ LRESULT SystemClass::MessageHandler(HWND hWnd, UINT iMessage, WPARAM wParam, LPA
 	return DefWindowProc(hWnd, iMessage, wParam, lParam);
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	switch (iMessage)
 	{

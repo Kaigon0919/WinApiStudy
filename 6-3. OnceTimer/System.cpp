@@ -21,11 +21,9 @@ bool SystemClass::Initialize()
 
 void SystemClass::Run()
 {
-
 	MSG Message;
 	bool done = false;
 	ZeroMemory(&Message, sizeof(Message));
-
 
 	while (!done)
 	{
@@ -165,7 +163,7 @@ LRESULT SystemClass::MessageHandler(HWND hWnd, UINT iMessage, WPARAM wParam, LPA
 	return DefWindowProc(hWnd, iMessage, wParam, lParam);
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK SystemClass::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	switch (iMessage)
 	{
