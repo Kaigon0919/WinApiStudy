@@ -101,7 +101,7 @@ LRESULT SystemClass::MessageHandler(HWND hWnd, UINT iMessage, WPARAM wParam, LPA
 		switch (wParam)
 		{
 		case VK_ESCAPE:
-			SendMessage(hWnd, WM_DESTROY, 0, 0);
+			DestroyWindow(hWnd);
 			return 0;
 		}
 	case WM_LBUTTONDOWN:
